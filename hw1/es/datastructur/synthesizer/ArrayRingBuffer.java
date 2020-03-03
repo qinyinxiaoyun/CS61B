@@ -5,7 +5,7 @@ import java.util.Iterator;
 //TODO: Make sure to add the override tag for all overridden methods
 //TODO: Make sure to make this class implement BoundedQueue<T>
 
-public class ArrayRingBuffer<T>  {
+public class ArrayRingBuffer<T> implements BoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;
     /* Index for the next enqueue. */
@@ -21,6 +21,18 @@ public class ArrayRingBuffer<T>  {
     public ArrayRingBuffer(int capacity) {
         // TODO: Create new array with capacity elements.
         //       first, last, and fillCount should all be set to 0.
+        fillCount = 0;
+        first = 0;
+        last = 0;
+        rb = (T[])new Object[capacity];
+    }
+    public int capacity(){
+        return rb.length;
+    }
+
+    @Override
+    public int fillCount() {
+        return fillCount;
     }
 
     /**
@@ -30,7 +42,17 @@ public class ArrayRingBuffer<T>  {
     public void enqueue(T x) {
         // TODO: Enqueue the item. Don't forget to increase fillCount and update
         //       last.
-        return;
+        if (isFull()){
+            throw new RuntimeException("Ring buffer overflow");
+        }
+        else {
+            rb[last] = x;
+            if (last == rb.length - 1){last = 0;}
+            else {
+                last += 1;
+            }
+            fillCount += 1;
+        }
     }
 
     /**
@@ -40,7 +62,18 @@ public class ArrayRingBuffer<T>  {
     public T dequeue() {
         // TODO: Dequeue the first item. Don't forget to decrease fillCount and
         //       update first.
-        return null;
+        if (isEmpty()){
+            throw new RuntimeException("Ring buffer underflow");
+        }
+        else {
+            T x = rb[first];
+            if (first == rb.length - 1){first = 0;}
+            else {
+                first += 1;
+            }
+            fillCount -= 1;
+            return x;
+        }
     }
 
     /**
@@ -50,7 +83,27 @@ public class ArrayRingBuffer<T>  {
     public T peek() {
         // TODO: Return the first item. None of your instance variables should
         //       change.
-        return null;
+        return rb[first];
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new arrayIterator();
+    }
+    private class arrayIterator implements Iterator<T>{
+        private int position;
+        public arrayIterator(){
+            position = 0;
+        }
+        public boolean hasNext(){
+            return fillCount != position + 1;
+        }
+        public T next(){
+            T x = rb[position];
+            position += 1;
+            return x;
+        }
+
     }
 
     // TODO: When you get to part 4, implement the needed code to support
