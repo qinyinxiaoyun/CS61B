@@ -33,3 +33,10 @@ jobs:
       with:
         gradle-version: '5.2'
         arguments: build
+    - name: Build and push docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
+      with: 
+        image: qinxinxiaoyun/cs61b_ci
+        registry: docker.io
+        username: ${{ secret.DOCKER_USERNAME }}
+        password: ${{ secret.DOCKER_PASSWD }}
