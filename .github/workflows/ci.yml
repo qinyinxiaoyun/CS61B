@@ -38,5 +38,5 @@ jobs:
       with: 
         image: qinxinxiaoyun/cs61b_ci
         registry: docker.io
-        username: ${{ secret.DOCKER_USERNAME }}
-        password: ${{ secret.DOCKER_PASSWD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWD }}
